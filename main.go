@@ -10,30 +10,40 @@ import (
 
 // Game holds all data the entire game will need.
 type Game struct {
-	Map       GameMap
-	World     *ecs.Manager
-	WorldTags map[string]ecs.Tag
+	Map         GameMap
+	World       *ecs.Manager
+	WorldTags   map[string]ecs.Tag
+	Turn        TurnState
+	TurnCounter int
 }
 
 // NewGame creates a new Game Object and initializes the data
 func NewGame() *Game {
 	g := &Game{}
-	world, tags := InitializeWorld()
 	g.Map = NewGameMap()
+	world, tags := InitializeWorld(g.Map.CurrentLevel)
 	g.WorldTags = tags
 	g.World = world
+	g.Turn = PlayerTurn
+	g.TurnCounter = 0
 	return g
 }
 
 // Update is called each tic.
 func (g *Game) Update() error {
-	TryMovePlayer(g)
+	g.TurnCounter++
+	if g.Turn == PlayerTurn && g.TurnCounter > 8 {
+		TryMovePlayer(g)
+	}
+	//Obviously just for now
+	g.Turn = PlayerTurn
 	return nil
+
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	//Draw the Map
-	level := g.Map.Dungeons[0].Levels[0]
+	level := g.Map.CurrentLevel
 	level.DrawLevel(screen)
 	ProcessRenderables(g, level, screen)
 }
