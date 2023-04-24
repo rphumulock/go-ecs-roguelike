@@ -18,6 +18,7 @@ type Game struct {
 }
 
 // NewGame creates a new Game Object and initializes the data
+// This is a pretty solid refactor candidate for later
 func NewGame() *Game {
 	g := &Game{}
 	g.Map = NewGameMap()
@@ -41,6 +42,7 @@ func (g *Game) Update() error {
 
 }
 
+// Draw is called each draw cycle and is where we will blit.
 func (g *Game) Draw(screen *ebiten.Image) {
 	//Draw the Map
 	level := g.Map.CurrentLevel
@@ -52,15 +54,13 @@ func (g *Game) Draw(screen *ebiten.Image) {
 func (g *Game) Layout(w, h int) (int, int) {
 	gd := NewGameData()
 	return gd.TileWidth * gd.ScreenWidth, gd.TileHeight * gd.ScreenHeight
+
 }
 
 func main() {
-
 	g := NewGame()
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
-
 	ebiten.SetWindowTitle("Tower")
-
 	if err := ebiten.RunGame(g); err != nil {
 		log.Fatal(err)
 	}
