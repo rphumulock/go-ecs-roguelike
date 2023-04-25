@@ -8,9 +8,12 @@ import (
 	"github.com/norendren/go-fov/fov"
 )
 
+var floor *ebiten.Image
+var wall *ebiten.Image
+
 // Level holds the tile information for a complete dungeon level.
 type Level struct {
-	Tiles         []MapTile
+	Tiles         []*MapTile
 	Rooms         []Rect
 	PlayerVisible *fov.View
 }
@@ -35,6 +38,7 @@ const (
 // NewLevel creates a new game level in a dungeon.
 func NewLevel() Level {
 	l := Level{}
+	loadTileImages()
 	rooms := make([]Rect, 0)
 	l.Rooms = rooms
 	l.GenerateLevelTiles()
@@ -73,9 +77,9 @@ func (level *Level) GetIndexFromXY(x int, y int) int {
 }
 
 // createTiles creates a map of all walls as a baseline for carving out a level.
-func (level *Level) CreateTiles() []MapTile {
+func (level *Level) CreateTiles() []*MapTile {
 	gd := NewGameData()
-	tiles := make([]MapTile, gd.ScreenHeight*gd.ScreenWidth)
+	tiles := make([]*MapTile, gd.ScreenHeight*gd.ScreenWidth)
 	index := 0
 	for x := 0; x < gd.ScreenWidth; x++ {
 		for y := 0; y < gd.ScreenHeight; y++ {
@@ -92,7 +96,7 @@ func (level *Level) CreateTiles() []MapTile {
 				IsRevealed: false,
 				TileType:   WALL,
 			}
-			tiles[index] = tile
+			tiles[index] = &tile
 		}
 	}
 	return tiles
@@ -184,10 +188,6 @@ func (level *Level) CreateHorizontalTunnel(x1 int, x2 int, y int) {
 		if index > 0 && index < gd.ScreenWidth*gd.ScreenHeight {
 			level.Tiles[index].Blocked = false
 			level.Tiles[index].TileType = FLOOR
-			floor, _, err := ebitenutil.NewImageFromFile("assets/floor.png")
-			if err != nil {
-				log.Fatal(err)
-			}
 			level.Tiles[index].Image = floor
 		}
 	}
@@ -201,10 +201,6 @@ func (level *Level) CreateVerticalTunnel(y1 int, y2 int, x int) {
 		if index > 0 && index < gd.ScreenWidth*gd.ScreenHeight {
 			level.Tiles[index].Blocked = false
 			level.Tiles[index].TileType = FLOOR
-			floor, _, err := ebitenutil.NewImageFromFile("assets/floor.png")
-			if err != nil {
-				log.Fatal(err)
-			}
 			level.Tiles[index].Image = floor
 		}
 	}
@@ -223,4 +219,21 @@ func (level Level) IsOpaque(x, y int) bool {
 	idx := level.GetIndexFromXY(x, y)
 	return level.Tiles[idx].TileType == WALL
 
+}
+
+func loadTileImages() {
+	if floor != nil && wall != nil {
+		return
+	}
+	var err error
+
+	floor, _, err = ebitenutil.NewImageFromFile("assets/floor.png")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	wall, _, err = ebitenutil.NewImageFromFile("assets/wall.png")
+	if err != nil {
+		log.Fatal(err)
+	}
 }
