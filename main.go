@@ -34,7 +34,7 @@ func NewGame() *Game {
 func (g *Game) Update() error {
 	g.TurnCounter++
 	if g.Turn == PlayerTurn && g.TurnCounter > 8 {
-		TryMovePlayer(g)
+		TakePlayerAction(g)
 	}
 	//Obviously just for now
 	if g.Turn == MonsterTurn {
@@ -50,6 +50,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	level := g.Map.CurrentLevel
 	level.DrawLevel(screen)
 	ProcessRenderables(g, level, screen)
+	ProcessUserLog(g, screen)
+	ProcessHUD(g, screen)
 }
 
 // Layout will return the screen dimensions.
