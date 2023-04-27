@@ -5,6 +5,7 @@ go 1.20
 require (
 	github.com/RAshkettle/rrogue v0.0.19
 	github.com/hajimehoshi/ebiten/v2 v2.5.1
+	github.com/mattn/go-sqlite3 v1.14.16
 )
 
 require golang.org/x/text v0.8.0 // indirect
