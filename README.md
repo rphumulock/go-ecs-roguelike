@@ -5,9 +5,6 @@ field-of-view, A\* monster pursuit, and d10 melee combat — with every piece of
 game state living in an Entity-Component-System world rather than a class
 hierarchy.
 
-Built by following the [Fat Old Yeti](https://www.fatoldyeti.com/) Go roguelike
-tutorial series.
-
 ## Why this project exists
 
 I wanted to learn ECS by writing one, not by reading about one.
